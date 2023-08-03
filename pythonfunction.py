@@ -5,8 +5,7 @@ def hello(name):
 
 # Create function with return value
 def area(width, height=0):
-    total = width * height
-    return total
+    return width * height
 
 
 # Call hello() function

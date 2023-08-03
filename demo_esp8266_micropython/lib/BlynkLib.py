@@ -63,14 +63,14 @@ class BlynkProtocol:
         self.connect()
 
     # These are mainly for backward-compatibility you can use "blynk.on()" instead
-    def ON(blynk, evt):
-        return blynk.on(evt)
+    def ON(self, evt):
+        return self.on(evt)
 
-    def VIRTUAL_READ(blynk, pin):
-        return blynk.on("readV"+str(pin))
+    def VIRTUAL_READ(self, pin):
+        return self.on(f"readV{str(pin)}")
 
-    def VIRTUAL_WRITE(blynk, pin):
-        return blynk.on("V"+str(pin))
+    def VIRTUAL_WRITE(self, pin):
+        return self.on(f"V{str(pin)}")
 
     def on(blynk, evt, func=None):
         if func:
@@ -107,7 +107,7 @@ class BlynkProtocol:
         self._send(MSG_TWEET, msg)
 
     def log_event(self, event, descr=None):
-        if descr == None:
+        if descr is None:
             self._send(MSG_EVENT_LOG, event)
         else:
             self._send(MSG_EVENT_LOG, event, descr)
@@ -159,7 +159,7 @@ class BlynkProtocol:
         self.emit('disconnected')
 
     def process(self, data=None):
-        if not (self.state == CONNECTING or self.state == CONNECTED):
+        if self.state not in [CONNECTING, CONNECTED]:
             return
         now = gettime()
         if now - self.lastRecv > self.heartbeat+(self.heartbeat//2):
@@ -216,15 +216,15 @@ class BlynkProtocol:
                 self.log('>', cmd, i, '|', ','.join(args))
                 if cmd == MSG_PING:
                     self._send(MSG_RSP, STA_SUCCESS, id=i)
-                elif cmd == MSG_HW or cmd == MSG_BRIDGE:
+                elif cmd in [MSG_HW, MSG_BRIDGE]:
                     if args[0] == 'vw':
-                        self.emit("V"+args[1], args[2:])
+                        self.emit(f"V{args[1]}", args[2:])
                         self.emit("V*", args[1], args[2:])
                     elif args[0] == 'vr':
-                        self.emit("readV"+args[1])
+                        self.emit(f"readV{args[1]}")
                         self.emit("readV*", args[1])
                 elif cmd == MSG_INTERNAL:
-                    self.emit("int_"+args[1], args[2:])
+                    self.emit(f"int_{args[1]}", args[2:])
                 elif cmd == MSG_REDIRECT:
                     self.server = args[0]
                     self.port = args[1]

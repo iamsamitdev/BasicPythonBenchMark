@@ -71,7 +71,7 @@ ledD5 = machine.Pin(14, machine.Pin.OUT)
 # Register Virtual Pins
 @blynk.VIRTUAL_WRITE(1)
 def my_write_handler(value):
-    print('Current V1 value: {}'.format(value))
+    print(f'Current V1 value: {value}')
     if value == ['1']:
         led.value(1)
     else:
@@ -80,7 +80,7 @@ def my_write_handler(value):
 
 @blynk.VIRTUAL_WRITE(5)
 def my_write_handler(value):
-    print('Current V1 value: {}'.format(value))
+    print(f'Current V1 value: {value}')
     if value == ['1']:
         ledD5.value(1)
     else:
